@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="row">
+        <table class="table table-hover table-borderer">
+            <thead>
+                <tr>
+                    <th>名字</th>
+                    <th>时间</th>
+                    <th>权限</th>
+                    <!--<th>查看</th>-->
+                    <th>删除</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each users}}
+                    <tr class="item-id-{{_id}}">
+                        <td>{{name}}</td>
+                        <td>{{meta.updateAt}}</td>
+                        <td>{{role}}</td>
+                        <!--<td><a target="_blank" href="../{{_id}}">查看</a></td>-->
+                        <td><button class="btn btn-danger del" type="button" data-id="{{_id}}">删除</button></td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <hr/>
+</div>
+
+{{#section 'jquery'}}
+<script>
+    //这里处理删除操作
+    $(function() {
+        $(".del").click(function (event) {
+            var target = $(event.target),//target 属性规定在何处打开链接文档。
+                    id = target.data("id"),
+                    tr = $(".item-id-" + id);
+            $.ajax({
+                type: "DELETE",
+                url: "/admin/user/delete?id=" + id
+            }).done(function (results) {
+                alert(11111);
+                console.log(results);
+                1 === results.success && tr.length > 0 && tr.remove();//经典，精炼
+                location.reload();
+            });
+        });
+    });
+</script>
+{{/section}}

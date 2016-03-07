@@ -1,0 +1,24 @@
+{
+  "name": "Iot",
+  "description": "mywebsite",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "iot"
+  ],
+  "authors": [
+    "(qiuwei)"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/vendor"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6"
+  }
+}

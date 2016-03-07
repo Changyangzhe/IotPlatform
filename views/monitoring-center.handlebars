@@ -1,0 +1,406 @@
+
+
+
+
+
+
+{{#section 'head'}}
+    <!-- ECharts单文件引入 -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+{{/section}}
+
+
+
+<div class="monitoring-center iot_exitFullScreen iot_fullScreen" id="iot_fullScreen">
+    <!--<h1>monitoring center</h1><hr/>-->
+    <!--这里加载选择设备的select选项卡-->
+    <div class="iot_select_device">
+        <div class="container">
+            <div class="row">
+                <form class="form-horizontal">
+                    <div class="form-group"><br/>
+                        <label for="projectId" class="col-sm-2 control-label">请选择所要查看的设备:</label>
+                        <div class="col-sm-4">
+                            <select class="form-control iot_device_dataPoint">
+                            {{#each projects}}
+                                <option value ="{{name}}" data-project_id="{{_id}}">项目&nbsp;:&nbsp;{{name}}</option>
+                            {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <select class="form-control iot_device_select">
+                                <option class="iot_select_null" value ="">请选择设备</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div><hr/>
+    </div>
+    <!--这里显示设备的基本信息-->
+    <div class="iot_device_message">
+        <div class="container">
+            <div class="row">
+
+                <h2 class="iot_device_title">设备&nbsp;:&nbsp;<strong></strong><a href="/data-point/data-point-create">创建数据节点</a></h2>
+                <!--<a href="javascript:void(0);">刷新</a>-->
+                <hr/>
+            </div>
+        </div>
+    </div>
+
+    <!--这里用于加载设备的各项信息数据的显示-->
+    <div class="iot_device_dataPoint_show">
+        <div class="iot_left col-sm-10">
+            <div class="iot_dataPoint_single">
+                <!--<div class ="col-sm-6 ids_wrap">-->
+                    <!--<div class="ids_head">-->
+                        <!--<span>选择时间段&nbsp;:</span>-->
+                        <!--<select>-->
+                            <!--<option value="month">最近一月</option>-->
+                            <!--<option value="week">最近一周</option>-->
+                            <!--<option value="day">最近一天</option>-->
+                        <!--</select>-->
+                        <!--<span>刷新周期:<strong>10</strong>S</span>-->
+                        <!--<a href = "#"  class="iot_refresh">刷新</a>-->
+                    <!--</div>-->
+                    <!--<div class="ids_body" id=""></div>-->
+                <!--</div>-->
+
+
+                <!--<div class ="col-sm-6 ids_wrap" style="height:400px;border:1px solid red;margin-bottom:10px;">-->
+                    <!--<div class="ids_head" style="height:50px;border:1px solid red">11</div>-->
+                    <!--<div class="ids_body" id="t" style="height:350px;border:1px solid red;width:100%">22</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div class="echarts">
+            <!-- 为 ECharts 准备一个具备大小（宽高）的Dom -->
+            <div id="iot_value" class=" iot_value"></div>
+            <div id="iot_value_realTime" class=" iot_value_realTime"></div>
+            <!--<div id="iot_value" style="width: 400px;height:400px; float:left;border:1px solid #ccc"></div>-->
+        </div>
+
+        <div class="iot_right col-sm-2">
+            <!--<div id="" class ="col-sm-12">-->
+                <!--<h3>空调开关按钮</h3>-->
+                <!--<div class="iot_switch demo1">-->
+                    <!--<input type="checkbox">-->
+                    <!--<label></label>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div id="" class ="col-sm-12">-->
+                <!--<h3>空调开关按钮</h3>-->
+                <!--<div class="iot_switch demo1">-->
+                    <!--<input type="checkbox">-->
+                    <!--<label></label>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+    <button class="btn btn-success large">全屏切换</button>
+    <!--<div id="568f48b6d2100c1c09d2ad68" style="width:400px;height:400px;border:1px solid red;clear:left;"></div>-->
+
+</div>
+
+
+
+{{#section 'jquery'}}
+    <script>//全屏切换代码,兼顾兼容性
+
+    //requestFullscreen()使得浏览器全屏
+    function launchFullscreen(element) {
+        if(element.requestFullscreen){
+            element.requestFullscreen();
+        } else if(element.mozRequestFullScreen){
+            element.mozRequestFullScreen();
+        } else if(element.msRequestFullscreen){
+            element.msRequestFullscreen();
+        } else if(element.webkitRequestFullscreen){
+            element.webkitRequestFullScreen();
+        }
+    }
+    //取消全屏函数
+    function exitFullscreen(){
+        if (document.exitFullscreen){
+            document.exitFullscreen();
+        } else if (document.msExitFullscreen){
+            document.msExitFullscreen();
+        } else if (document.mozCancelFullScreen){
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen){
+            document.webkitExitFullscreen();
+        }
+    }
+    //exitFullscreen();
+    $("button").click(function(){
+        //launchFullscreen(document.documentElement);// html  全屏
+        launchFullscreen(document.getElementById("iot_fullScreen"));
+        $("#iot_fullScreen").css("width","100%").css("overflow","auto");
+    });
+
+    </script>
+
+
+    <script>
+        var dataPoint_id_1 = new Array();
+        //这里用于加载项目下的设备信息
+        $(document).ready(function(){
+            var blurEvent_project = function(){
+                var projectId = $(".iot_select_device .iot_device_dataPoint option:selected").data("project_id");
+                //console.log(projectId);
+                projectId && $.ajax({
+                    url:"http://localhost:3000/device/device-search?projectId="+projectId,
+                    type:"get",
+                    dataType:"jsonp",
+                    cache:true,
+                    crossDomain:true,//跨域访问
+                    jsonp:"callback",
+                    success:function(data){
+                        //console.log(data.devices);
+                        $('.iot_select_device .iot_device_select').html("");
+                        var len = data.devices.length;
+                        for(var i=0;i<len;i++){
+                            var html = '<option value ="'+data.devices[i].name+'" data-device_id="'+data.devices[i]._id+'">设备&nbsp;:&nbsp;'+data.devices[i].name+'</option>';
+                            $(html).appendTo($('.iot_select_device .iot_device_select'));
+                        }
+                    },
+                    error:function(data){
+                        console.log(data);
+                    }
+                });
+                setTimeout('$(".monitoring-center .iot_device_title strong").html($(".iot_select_device .iot_device_select option:selected").val())',"200");
+            };
+            blurEvent_project();
+            $(".iot_select_device .iot_device_dataPoint").blur(blurEvent_project);
+
+
+            //这里用于加载数据节点的信息
+            var load_dataPoint = function(){
+                $(".monitoring-center .iot_device_title strong").html($(".iot_select_device .iot_device_select option:selected").val());
+                var deviceId = $(".iot_select_device .iot_device_select option:selected").data("device_id");
+                //console.log(deviceId);
+                deviceId && $.ajax({
+                    url:"http://localhost:3000/data-point/data-point-search?deviceId="+deviceId,
+                    type:"get",
+                    dataType:"jsonp",
+                    cache:true,
+                    crossDomain:true,//跨域访问
+                    jsonp:"callback",
+                    success:function(data){
+                        //console.log(data.dataPoints);
+                        $(".iot_device_dataPoint_show .iot_dataPoint_single").html("");
+                        $(".iot_device_dataPoint_show .iot_right").html("");
+                        //这里先要输出单个数据点的框架，数据随后请求再输出，还要分清楚是什么类型的数据type
+                        var dp = data.dataPoints;
+                        var len = dp.length;
+                        for(var i=0;i<len;i++){
+                            //alert(i);
+                            if(dp[i].value.type == "numericalModel"){
+                                //console.log(dp[i].value.type);
+                                var html_1 = '<div class ="col-sm-6 ids_wrap">' +
+                                        '<div class="ids_head">' +
+                                        '<span>选择时间段&nbsp;:</span>' +
+                                        '<select data-dataPoint_id = "'+dp[i]._id+'">' +
+                                        '<option value="day">最近一天</option>' +
+                                        '<option value="week">最近一周</option>' +
+                                        '<option value="month">最近一月</option>' +
+                                        '</select>' +
+                                        '<span>刷新周期:<strong>'+dp[i].cycle+'</strong>S</span>' +
+                                        '<a href = "javascript:void(0);" class="iot_refresh">刷新</a></div>' +
+                                        '<div class="ids_body" id="'+dp[i]._id+'"></div></div>';
+                                $(".iot_device_dataPoint_show .iot_dataPoint_single").append(html_1);
+                                dataPoint_id_1.push(dp[i]._id);
+                            }else{
+                                console.log(dp[i]);
+                                //这里控制input的checked属性来控制颜色变化
+                                var html_2 = '<div id="'+dp[i]._id+'" class ="col-sm-12">' +
+                                        '<h4>'+dp[i].name+'</h3>' +
+                                        '<div class="iot_switch demo1">' +
+                                        '<input type="checkbox">' +
+                                        '<label></label>' +
+                                        '</div></div>';
+                                $(".iot_device_dataPoint_show .iot_right").append(html_2);
+                            }
+                        }
+
+                        //这里处理数据监控页面的展示，筛选时间段   函数的上下文位置一定要选择对
+                        //获取选择的value
+                        //重新加载图表的数据需要知道所要加载的数据节点的id属性，这里筛选也就是要提供筛选的
+                        // 数据节点的id以及时间间隔，刷新的时间间隔与直接记载的时间间隔是一样的
+                        //上边的延迟加载造成下边的事件添加出现问题
+
+                        /** 测试-->要在生成元素的时候就加上元素对应的事件
+                         * 同一个事件每次遍历都会重新添加上去，因此遍历三次就会添加三个事件**/
+
+                        $(".iot_dataPoint_single .ids_head select").blur(function(){//选择时间段的时候触发
+                            //alert($(this).val());
+                            //alert($(this).data("datapoint_id"));
+                            setTimeout(load_dataStream_line($(this).data("datapoint_id"),$(this).val()),"200");
+                        });
+
+                        $(".iot_dataPoint_single .ids_head .iot_refresh").click(function(){//点击刷新的时候触发
+                            //alert($(this).siblings("select").val());
+                            //alert($(this).siblings("select").data("datapoint_id"));
+                            setTimeout(load_dataStream_line($(this).siblings("select").data("datapoint_id"),$(this).siblings("select").val()),"200");
+                        });
+
+                        //console.log(dataPoint_id_1);
+                        //这里利用数据节点的id来遍历数据节点，以及数据节点的数值显示。后边也需要用到需要保存到页面上
+                        for(var j=0;j<dataPoint_id_1.length;j++){
+                            //console.log(dataPoint_id_1[j]);
+                            setTimeout(load_dataStream_line(dataPoint_id_1[j],"day"),"200");//这里需要在id传递到相应位置后再来给值
+                        }
+                        //这里需要清空dataPoint_id_1数组，确保下次正常
+                        dataPoint_id_1 = [];
+                        //setTimeout(load_dataStream_line("569f3c827305b9bc241c60cc"),"200");
+                    },
+                    error:function(data){
+                        console.log(data);
+                    }
+                });
+            };
+            //这里稍微延迟执行函数一次，保证拿到deviceId，不然会出现由于ajax的异步操作的缘故导致数据不能加载到
+            setTimeout(load_dataPoint,"200");
+            $(".iot_select_device .iot_device_select").blur(load_dataPoint);//失去焦点触发函数
+/*自动刷新*/      //setInterval(load_dataPoint,"10000");//这里设置自动刷新页面的时间间隔
+        });
+
+        //这里处理Echarts的js数据
+        // 基于准备好的dom，初始化echarts实例
+        // 路径配置
+        //因为要复用，故而写成一个函数
+        function load_dataStream_line(dataPoint_id,time_range){
+            //console.log(dataPoint_id);
+            //这里处理时间段的显示，从结果中选择
+            var curDate = new Date();
+            var start;
+            if(time_range === "day" || time_range ==="undefined"){//这个地方的判断表达式一开始的时候写的有问题导致不能正确的切换时间
+                //console.log(1);
+                start = new Date((curDate/1000-86400)*1000);
+            }else if(time_range === "week"){
+                //console.log(2);
+                start = new Date((curDate/1000-86400*0.0017)*1000);//这里暂用于测试
+            }else{
+                //console.log(3);
+                start = new Date((curDate/1000-86400*131)*1000);//这里暂用于测试
+            }
+            //console.log(start);
+            //console.log(moment(start).fromNow());
+            //console.log(start.getTime());
+            var rg = start.getTime();
+            $.ajax({
+                url: "http://localhost:3000/data-stream/data-stream-search?dataPoint_id=" + dataPoint_id,
+                type: "get",
+                dataType: "jsonp",
+                cache: true,
+                crossDomain: true,//跨域访问
+                jsonp: "callback",
+                success: function (data) {
+                    //console.log(data);
+                    var timeArr = new Array();
+                    var valueArr = new Array();
+                    var ds = data.dataStreams;
+                    var len = ds.length;
+                    for(var i= 0;i<len;i++){
+                        //console.log(ds[i].meta.createAt);
+                        //这里时间顺序要将时间点和数值保存到两个数组中
+                        //console.log(moment(ds[i].meta.createAt).format('MM-DD HH:mm:ss'));
+                        //console.log(moment(ds[i].meta.createAt).toDate().getTime());
+                        if(rg<moment(ds[i].meta.createAt).toDate().getTime()){//目前，使用的解决方案是都化成
+                        // 到1970.1.1的毫秒时间然后来比较数值的大小，这不是一个比较好的方案，以后还需要改成性能更好点的方案。
+                            timeArr.push(moment(ds[i].meta.createAt).format('MM-DD HH:mm:ss'));
+                        }
+                        valueArr.push(ds[i].value);
+                    }
+                    //console.log(timeArr);
+                    //console.log(valueArr);
+
+                    //直接在这里插入要输出的数据
+                    require.config({
+                        paths: {
+                            echarts:'http://echarts.baidu.com/build/dist'
+                        }
+                    });
+                    require([
+                                'echarts',
+                                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                                'echarts/chart/line' //折线图
+                            ],
+                            function (ec) {
+                                // 基于准备好的dom，初始化echarts图表
+                                var myChart = ec.init(document.getElementById(dataPoint_id));
+                                var option = {
+                                    title : {//这里添加表的名称
+                                        text: data.dataPoint.name+'数据展示页面',
+                                        subtext: data.dataPoint.descript
+                                    },
+                                    tooltip : {
+                                        trigger: 'axis'
+                                    },
+                                    grid:{//这里控制坐标系的位置
+                                        //x:'100',
+                                        y:'80',
+                                        //x2:'50',
+                                        y2:'70'
+                                    },
+                                    dataZoom: {
+                                        show: true
+                                        //start : 0.5 * data.dataPoint.range.min,
+                                        //end : 0.5 * data.dataPoint.range.max
+                                    },
+                                    toolbox: {
+                                        show : true,
+                                        feature : {
+                                            mark : {show: true},
+                                            dataView : {show: true, readOnly: false},
+                                            magicType : {show: true, type: ['line', 'bar']},
+                                            restore : {show: true},
+                                            saveAsImage : {show: true}
+                                        }
+                                    },
+                                    calculable : true,
+                                    xAxis : [
+                                        {
+                                            type : 'category',
+                                            boundaryGap : false,
+                                            //data: ['1.2','1.3','1.4','1.5','1.6','1.7']
+                                            data:timeArr
+                                        }
+                                    ],
+                                    yAxis : [
+                                        {
+                                            type : 'value',
+                                            axisLabel : {
+                                                formatter: '{value}'+data.dataPoint.value.numericalUnit
+                                            }
+                                        }
+                                    ],
+                                    series : [
+                                        {
+                                            name:'数值value',
+                                            type:'line',
+                                            //data:[11, 5, 15, 18, 12, 13, 10],
+                                            data:valueArr,
+                                            markPoint : {//这里有个问题，不能识别三位数，三位数不能比较大小
+                                                data : [
+                                                    {type : 'max', name: '最大值'},
+                                                    {type : 'min', name: '最小值'}
+                                                ]
+                                            }
+
+                                        }
+
+                                    ]
+                                };
+                                // 为echarts对象加载数据
+                                myChart.setOption(option);
+                            });
+                },
+                error: function (data){
+                    console.log(data);
+                }
+            });
+        }
+    </script>
+{{/section}}

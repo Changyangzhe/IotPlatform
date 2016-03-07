@@ -1,0 +1,439 @@
+
+
+
+
+{{#section 'head'}}
+    <!--百度地图加载文件以及密钥-->
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=rUHCVfQzwBehxTZkhCRakpcE"></script>
+    <!-- ECharts单文件引入 -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+{{/section}}
+
+<div class="iot_deviceAttach">
+    <div class="deviceTag_1">
+        <div class="container step_1">
+            <div class="row">
+                <form class="form-horizontal" role="form" method="POST" action="/device/newDevice" enctype="multipart/form-data"><br/>
+                    <div class="form-group">
+                        <label for="projectId" class="col-sm-2 control-label">所属项目</label><em>*</em>
+                        <div class="col-sm-8">
+                            <select class="form-control iot_device_project" name="device[project]">
+                                {{#each projects}}
+                                    <option value ="{{name}}">{{name}}</option>
+                                {{/each}}
+                            </select>
+                            <!--<input type="text" class="form-control" id="projectId" name="device[project]"/>-->
+                        </div>
+                        <a class="iot_create_project" href="/project/project-manage">没有项目，请先创建项目</a>
+                    </div><br/>
+                    <div class="form-group">
+                        <label for="deviceName" class="col-sm-2 control-label">设备名称</label><em>*</em>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="deviceName" name="device[name]" required="true" placeholder="请填写设备名称"/>
+                        </div>
+                    </div><br/>
+                    <div class="form-group">
+                        <label for="deviceDescript" class="col-sm-2 control-label">设备描述</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="deviceDescript" placeholder="请填写设备描述" name="device[descript]"></textarea>
+                        </div>
+                    </div><br/>
+                    <div class="form-group">
+                        <label for="deviceName" class="col-sm-2 control-label">地理位置</label><em>*</em>
+                        <div class="col-sm-8" style="margin-top:2px;">
+                            <div id="r-result">请输入地址:<input type="text" id="suggestId" placeholder="请搜索地址或者直接在地图上选择"/></div><hr/>
+                            <div id="searchResultPanel"></div>
+                            <div id="allmap"></div>
+                            <fieldset>
+                                <hr/>
+                                经度：<input class="longitude" name="device[location.longitude]" type="text" required="true" placeholder="选择地点自动生成"/>
+                                纬度：<input class="latitude" name="device[location.latitude]" type="text" placeholder="选择地点自动生成"/>
+                            </fieldset>
+                            <input type="hidden" id="iot_position" name="device[position]"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="devicePicture" class="col-sm-2 control-label">设备图片</label>
+                        <div class="col-sm-8" style="padding-top:7px;">
+                            <input type="hidden" name="device[picture]" value="">
+                            <input id="devicePicture" name="devicePicture" type="file"/>
+                        </div>
+                    </div><br/>
+                    <!--在这个form表单中，我想要保存此项目的_id和name属性设备的数据中，但是select只能选择一种属性，所有要通过别的途径来获取需要的数据属性，这里想到两种方式，第一种就是在表单处理的函数中，通过数据库find需要的信息。第二种就是通过ajax请求来获取需要的数据填入下边的input隐藏域表单中，这里选用第二种，只是多一些尝试-->
+                    <input class="iot_deviceRelation" type="hidden" name="device[relation]" value="">
+                    <button class="btn btn-success col-sm-offset-2 col-sm-2" type="submit">添加设备</button>
+                </form>
+            </div>
+        </div>
+        <div class="container step_2">
+            <div class="row text-center">
+                <h1>恭喜，新建设备&nbsp;<span></span>&nbsp;创建成功!</h1><br/>
+                <a href=""><button type="submit" class="btn btn-info btn-large">创建数据节点</button></a><br/>
+            </div>
+            <hr/>
+        </div>
+    </div>
+    <div class="container deviceTag_2">
+        <!--这里可以详细查看一个设备的具体的部分，还有连接的数据-->
+        <!--<div class="row">-->
+            <!--<form class="form-horizontal">-->
+                <!--<div class="form-group"><br/>-->
+                    <!--<label for="projectId" class="col-sm-2 control-label">请选择所要查看的设备:</label>-->
+                    <!--<div class="col-sm-4">-->
+                        <!--<select class="form-control iot_device_dataPoint">-->
+                            <!--{{#each projects}}-->
+                                <!--<option value ="{{name}}">项目&nbsp;:&nbsp;{{name}}</option>-->
+                            <!--{{/each}}-->
+                        <!--</select>-->
+                    <!--</div>-->
+                    <!--<div class="col-sm-4">-->
+                        <!--<select class="form-control iot_device_select">-->
+                            <!--<option class="iot_select_null" value ="">请选择设备</option>-->
+                        <!--</select>-->
+                        <!--&lt;!&ndash;<input type="text" class="form-control" id="projectId" name="device[project]"/>&ndash;&gt;-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</form>-->
+        <!--</div>-->
+        <!--<div class="container">-->
+            <!--<div class="row">-->
+                <!--<h2 class="iot_device_title">设备&nbsp;:&nbsp;<strong></strong><a href="">创建数据节点</a></h2><hr/>-->
+                <!--&lt;!&ndash; 为 ECharts 准备一个具备大小（宽高）的Dom &ndash;&gt;-->
+                <!--<div id="iot_value" class="iot_value"></div>-->
+                <!--<div id="iot_value_realTime" class=" iot_value_realTime"></div>-->
+                <!--&lt;!&ndash;<div id="iot_value" style="width: 400px;height:400px; float:left;border:1px solid #ccc"></div>&ndash;&gt;-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--<hr/>-->
+    </div>
+</div>
+
+{{#section 'jquery'}}
+    <script>
+        //这里处理按钮的切换页面的问题
+        $(".tag_1").css('color','#0000ff').css('border-bottom','2px solid #009900');//默认选中tag_1
+        $('.iot_section.tag_1').click(function(){
+            $('.iot_section.tag_1').css('color','#0000ff').css('border-bottom','2px solid #009900');
+            $('.iot_section.tag_2').css('color','#666666').css('border-bottom','none');
+            $('.deviceTag_2').css("display","none");
+            $('.deviceTag_1').css("display","block");
+        });
+        $('.iot_section.tag_2').click(function(){
+            $('.iot_section.tag_2').css('color','#0000ff').css('border-bottom','2px solid #009900');
+            $('.iot_section.tag_1').css('color','#666666').css('border-bottom','none');
+            $('.deviceTag_1').css("display","none");
+            $('.deviceTag_2').css("display","block");
+            window.location = "http://localhost:3000/monitoring-center";
+        });
+        //这里处理按钮的切换页面的问题 结束
+    </script>
+    <script>
+        //这里通过项目name加载项目的id
+        $(document).ready(function(){
+            var blurEvent_1 = function(){
+                var projectName = $(".step_1 .iot_device_project").val();
+                //console.log(projectName);
+                projectName&& $.ajax({
+                    url:"http://localhost:3000/deviceGetProject?projectName="+projectName,
+                    type:"get",
+                    dataType:"jsonp",
+                    cache:true,
+                    crossDomain:true,//跨域访问
+                    jsonp:"callback",
+                    success:function(data){
+                        console.log(data);
+                        $(".iot_deviceRelation").val(data.id);
+                        //$('input[type="device[relation]"]').val(data.id);//使用ajax来操作，
+                    },
+                    error:function(data){
+                        console.log(data);
+                    }
+                })
+            };
+//            var blurEvent_2 = function(){
+//                var projectName = $(".deviceTag_2 .iot_device_dataPoint").val();
+//                //console.log(projectName);
+//                projectName&& $.ajax({
+//                    url:"http://localhost:3000/deviceGetProject?projectName="+projectName,
+//                    type:"get",
+//                    dataType:"jsonp",
+//                    cache:true,
+//                    crossDomain:true,//跨域访问
+//                    jsonp:"callback",
+//                    success:function(data){
+//                        console.log(data.devices);
+//                        //$('input[type="device[relation]"]').val(data.id);//使用ajax来操作，
+//                        //这里处理通过项目的_id查询关联下边的设备，填入后边的select
+//                        //$('.deviceTag_2 .iot_device_select option:not(.iot_select_null)').html("");
+//                        $('.deviceTag_2 .iot_device_select').html("");
+//                        var len = data.devices.length;
+//                        for(var i=0;i<len;i++){
+//                            var html = '<option value ="'+data.devices[i].name+'" data-device_id="'+data.devices[i]._id+'">设备&nbsp;:&nbsp;'+data.devices[i].name+'</option>';
+//                            $(html).appendTo($('.deviceTag_2 .iot_device_select'));
+//                            //$('.deviceTag_2 .iot_select_null').after(html);
+//                        }
+//                    },
+//                    error:function(data){
+//                        console.log(data);
+//                    }
+//                })
+//            };
+            blurEvent_1();//默认触发一次，在刚载入页面的时候的默认选择选项触发
+            $(".step_1 select").blur(blurEvent_1);//失去焦点的时候触发事件
+            //$(".deviceTag_2 .iot_device_dataPoint").blur(blurEvent_2);
+
+            //这里在选择完项目和设备以后，失去焦点触发事件，填入设备名字，还有请求页面的数据
+//            $(".deviceTag_2 .iot_device_select").blur(function(){//这里一定要先有触发才能点击连接
+//                $(".deviceTag_2 .iot_device_title strong").html($(".deviceTag_2 .iot_device_select").val());
+//                var url = "/data-point/data-point-creat?device_name=" + $(".deviceTag_2 .iot_device_select").val();
+//                $(".deviceTag_2 .iot_device_title a").attr("href",url);
+//                //ajax请求用来展示页面的数据,ajax 需要传给后台以设备的_id
+//                var device_id = $(".deviceTag_2 .iot_device_select option:selected").data("device_id");
+////                console.log(device_id);
+//                device_id&& $.ajax({
+//                    url:"http://localhost:3000/data-stream/get-data?device_id="+device_id,
+//                    type:"get",
+//                    dataType:"jsonp",
+//                    cache:true,
+//                    crossDomain:true,//跨域访问
+//                    jsonp:"callback",
+//                    success:function(data){
+//                        //console.log(data);
+//                    },
+//                    error:function(data){
+//                        console.log(data);
+//                    }
+//                });
+//            });
+
+            //表单提交成功后，提示创建成功，然后跳转,验证表单不能为空
+            $(".step_1 button").click(function(){
+                if($("#deviceName").val()!="" && $(".iot_deviceAttach .step_1 .longitude").val()!=""){
+                    $(".step_1").css('display','none');
+                    $(".step_2").css('display','block');
+                    //$(".step_2 h1 span").text($("#deviceName").val());   ;?device_name=" + $("#deviceName").val()
+                    var url = "/data-point/data-point-create";
+                    $(".step_2 a").attr("href",url);
+                    //return false;
+                }
+            });
+        });
+    </script>
+
+    <script>
+        //百度地图
+        // 百度地图API功能
+        var map = new BMap.Map("allmap");    // 创建Map实例
+        map.centerAndZoom(new BMap.Point(120.04185,30.229914), 11);  // 初始化地图,设置中心点坐标和地图级别
+        map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+        //map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
+        map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        var myIcon = new BMap.Icon("/img/baidu-marker.jpg", new BMap.Size(20,23));
+        map.addEventListener("click",function(e){//单击获取点击的经纬度
+            map.clearOverlays();
+            console.log(e.point.lng + "," + e.point.lat);
+            $('.longitude').val(e.point.lng);
+            $('.latitude').val(e.point.lat);
+            var pt = new BMap.Point(e.point.lng, e.point.lat);
+
+            var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+            map.addOverlay(marker2);
+            //以下代码实现对地址的你解析出地址
+            // 创建地理编码服务实例
+            var myGeo = new BMap.Geocoder();
+            // 根据坐标得到地址描述
+            myGeo.getLocation(new BMap.Point(e.point.lng, e.point.lat), function(result){
+                if (result){
+                    //alert(result.address);
+                    $("#iot_position").val(result.address);
+                }
+            });
+        });
+
+
+//搜索自动提示
+    function G(id) {
+        return document.getElementById(id);
+    }
+    var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+            {"input" : "suggestId"
+                ,"location" : map
+            });
+
+    ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
+        var str = "";
+        var _value = e.fromitem.value;
+        var value = "";
+        if (e.fromitem.index > -1) {
+            value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+        }
+        str = "FromItem<br/>index = " + e.fromitem.index + "<br />value = " + value;
+
+        value = "";
+        if (e.toitem.index > -1) {
+            _value = e.toitem.value;
+            value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+        }
+        str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+        G("searchResultPanel").innerHTML = str;
+    });
+
+    var myValue;
+    ac.addEventListener("onconfirm", function(e) {    //鼠标点击下拉列表后的事件
+        var _value = e.item.value;
+        myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+        G("searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+
+        setPlace();
+    });
+
+    function setPlace(){
+        map.clearOverlays();    //清除地图上所有覆盖物
+        function myFun(){
+            var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+            map.centerAndZoom(pp, 18);
+            console.log(pp);
+            var pt = new BMap.Point(pp.lng, pp.lat);
+            map.addOverlay(new BMap.Marker(pt,{icon:myIcon}));    //添加标注
+            $('.longitude').val(pp.lng);
+            $('.latitude').val(pp.lat);
+        }
+        var local = new BMap.LocalSearch(map, { //智能搜索
+            onSearchComplete: myFun
+        });
+        local.search(myValue);
+    }
+    </script>
+
+    <!--<script>-->
+        <!--//这里处理Echarts的js数据-->
+        <!--// 基于准备好的dom，初始化echarts实例-->
+        <!--// 路径配置-->
+        <!--require.config({-->
+            <!--paths: {-->
+                <!--echarts: 'http://echarts.baidu.com/build/dist'-->
+            <!--}-->
+        <!--});-->
+
+        <!--// 使用-->
+        <!--require(-->
+                <!--[-->
+                    <!--'echarts',-->
+                    <!--'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载-->
+                    <!--'echarts/chart/gauge',-->
+                    <!--'echarts/chart/line'-->
+                <!--],-->
+                <!--function (ec) {-->
+                    <!--// 基于准备好的dom，初始化echarts图表-->
+                    <!--var iot_value = ec.init(document.getElementById('iot_value'));-->
+                    <!--var iot_value_realTime = ec.init(document.getElementById('iot_value_realTime'));-->
+
+<!--var iot_valueOption = {-->
+                     <!--title : {-->
+                     <!--text: '设备当前温度'-->
+                        <!--},-->
+                     <!--tooltip : {-->
+                         <!--formatter: "{b} : {c}℃"-->
+                     <!--},-->
+                     <!--toolbox: {-->
+                         <!--show : true,-->
+                         <!--feature : {-->
+                             <!--mark : {show: true},-->
+                             <!--restore : {show: true},-->
+                             <!--saveAsImage : {show: true}-->
+                         <!--}-->
+                     <!--},-->
+                     <!--series : [-->
+                         <!--{-->
+                             <!--name:'设备当前温度',-->
+                             <!--type:'gauge',-->
+                             <!--detail : {formatter:'{value}℃'},-->
+                             <!--data:[{value: 20, name: '设备当前温度'}]-->
+                         <!--}-->
+                     <!--]-->
+                 <!--};-->
+                <!--clearInterval(timeTicket);-->
+                <!--var timeTicket = setInterval(function (){-->
+                    <!--iot_valueOption.series[0].data[0].value = (Math.random()*100).toFixed(2) - 0;-->
+                    <!--iot_value.setOption(iot_valueOption, true);-->
+                <!--},5000);-->
+
+
+<!--var iot_value_realTimeOption = {-->
+    <!--title : {//这里添加表的名称-->
+        <!--text: '数据点模拟数据展示页面',-->
+        <!--subtext: '虚构'-->
+    <!--},-->
+    <!--tooltip : {-->
+        <!--trigger: 'axis'-->
+    <!--},-->
+    <!--grid:{//这里控制坐标系的位置-->
+<!--//        x:'100',-->
+        <!--y:'80',-->
+<!--//        x2:'50',-->
+        <!--y2:'70'-->
+    <!--},-->
+    <!--dataZoom: {-->
+        <!--show: true,-->
+        <!--start : 30,-->
+        <!--end : 70-->
+    <!--},-->
+    <!--toolbox: {-->
+        <!--show : true,-->
+        <!--feature : {-->
+            <!--mark : {show: true},-->
+            <!--dataView : {show: true, readOnly: false},-->
+            <!--magicType : {show: true, type: ['line', 'bar']},-->
+            <!--restore : {show: true},-->
+            <!--saveAsImage : {show: true}-->
+        <!--}-->
+    <!--},-->
+    <!--calculable : true,-->
+    <!--xAxis : [-->
+        <!--{-->
+            <!--type : 'category',-->
+            <!--boundaryGap : false,-->
+            <!--data: ['1.2','1.3','1.4','1.5','1.6','1.7']-->
+        <!--}-->
+    <!--],-->
+    <!--yAxis : [-->
+        <!--{-->
+            <!--type : 'value',-->
+            <!--axisLabel : {-->
+                <!--formatter: '{value} '-->
+            <!--}-->
+        <!--}-->
+    <!--],-->
+    <!--series : [-->
+        <!--{-->
+            <!--name:'数值value',-->
+            <!--type:'line',-->
+            <!--data:[11, 5, 15, 18, 12, 13, 10],-->
+            <!--markPoint : {//这里有个问题，不能识别三位数，三位数不能比较大小-->
+                <!--data : [-->
+                    <!--{type : 'max', name: '最大值'},-->
+                    <!--{type : 'min', name: '最小值'}-->
+                <!--]-->
+            <!--}-->
+
+        <!--}-->
+
+    <!--]-->
+<!--};-->
+
+
+        <!--// 为echarts对象加载数据-->
+        <!--iot_value_realTime.setOption(iot_value_realTimeOption);-->
+    <!--});-->
+    <!--</script>-->
+
+
+{{/section}}
+
+
+
+
+
+
+
+

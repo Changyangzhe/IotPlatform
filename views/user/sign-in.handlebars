@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <form method="POST" action="/user/sign-in">
+                <div class="modal-body">
+                    {{#if user}}
+                        <b>用户已经存在，请直接登录！</b>
+                    {{/if}}
+                    <div class="form-group">
+                        <label for="signinName">用户名</label>
+                        <input id="signinName" class="form-control" name="user[name]" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label for="signinPassword">密码</label>
+                        <input id="signinPassword" class="form-control" name="user[password]" type="password">
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/"><button class="btn btn-default" type="button">关闭</button></a>
+                        <button class="btn btn-success" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

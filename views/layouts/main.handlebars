@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">{{!用来设置浏览器渲染模式，以支持的最高版本IE来渲染页面，chrome=1则可以激活Chrome Frame.}}
+	<title>基于NodeJS的物联网开放平台的设计与实现</title>
+	<!--{{#if showTests}}-->
+		<!--<link rel="stylesheet" href="/vendor/mocha.css">-->
+	<!--{{/if}}-->
+	{{{_sections.head}}}
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<script src="/vendor/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    <!--格式化时间的文件-->
+    <script type="text/javascript" src="/js/moment.min.js"></script>
+</head>
+<body>
+<!--[if lt IE 7]>
+	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+<!--header头部-->
+	<div class="navbar navbar-default navbar-fixed-top iot_head">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<div class="navbar-header">
+                    <a class="navbar-brand" href="/">
+                        <img src="/img/homeHead.png" class="img-rounded homeHead" alt="homeHead.png">
+                    </a>
+				</div>
+				<a class="navbar-brand title" href="/"><b>基于NodeJS的物联网开放平台的设计与实现</b></a>
+                <a class="navbar-brand iot_function fc_2" href="/project/project-manage">项目管理</a>
+                <a class="navbar-brand iot_function fc_1" href="/device/device-attach">设备连接</a>
+                <a class="navbar-brand iot_function fc_3" href="/data-point/data-point-create">数据节点</a>
+                <a class="navbar-brand iot_function fc_3" href="/monitoring-center">监控中心</a>
+                <a class="navbar-brand iot_function fc_3" href="/dataPointUploadTest">数据流</a>
+                <a class="navbar-brand iot_function fc_2" href="/data-point/data-point-view">数据节点查看</a>
+
+			</div>
+			{{#if user}}
+                <b class="navbar-text navbar-right">
+                    <span>欢迎你，{{user.name}}</span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <a class="navbar-link" href="/user/log-out">登出</a>
+                </b>
+			{{else}}
+                <b class="navbar-text navbar-right">
+                    <a class="navbar-link" href="/user/sign-up">注册</a>
+                    <span>&nbsp;|&nbsp;</span>
+                    <a class="navbar-link" href="/user/sign-in">登录</a>
+                </b>
+			{{/if}}
+		</div>
+	</div>
+<!--header头部结束-->
+
+<!--标题页面-->
+	<div class="container">
+			<div class="row">
+				<div class="page-header clearfix"><br>
+					<h1>{{title}}</h1>
+					{{# if section_1}}
+                        <div class="navbar-right">
+                            <div class="navbar-brand iot_section tag_1">{{section_1}}</div>
+                            <div class="navbar-brand iot_section tag_2">{{section_2}}</div>
+                            <div class="navbar-brand iot_section tag_3">{{section_3}}</div>
+                        </div>
+					{{/if}}
+				</div>
+			</div>
+	</div>
+<!--标题页面结束-->
+<!--隐藏域，传递值-->
+
+
+<!-- container -->
+    <div class="container">
+		{{{body}}}
+	</div>
+<!-- /container -->
+<!--footer底部-->
+	<div class="container">
+		<footer>
+			<p>&copy;  IotPlatform  2015.12.27</p>
+		</footer>
+	</div>
+<!--footer底部结束-->
+	<script src="/vendor/js/jquery-2.1.1.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/vendor/js/jquery-2.1.1.min.js"><\/script>')</script>
+	<!--上边的js是在上边的cdn获取失败的时候用本地文件代替，这里都先换成了本地文件-->
+
+	{{{_sections.jquery}}}
+<!--测试部分先不写-->
+	<!--{{#if showTests}}-->
+		<!--<div id="mocha"></div>-->
+		<!--<script src="/vendor/mocha.js"></script>-->
+		<!--<script src="/vendor/chai.js"></script>-->
+		<!--<script>-->
+			<!--mocha.ui('tdd');-->
+			<!--var assert = chai.assert;-->
+		<!--</script>-->
+		<!--<script src="/qa/tests-global.js"></script>-->
+		<!--{{#if pageTestScript}}-->
+			<!--<script src="{{pageTestScript}}"></script>-->
+		<!--{{/if}}-->
+		<!--<script>mocha.run();</script>-->
+	<!--{{/if}}-->
+
+	<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/js/main.js"></script>
+</body>
+</html>

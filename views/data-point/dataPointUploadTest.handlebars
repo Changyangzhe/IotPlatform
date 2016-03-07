@@ -1,0 +1,27 @@
+
+
+
+
+
+<h2>模拟数据上传页面</h2>
+<div class="container">
+    <div class="row text-center">
+        <form class="form-horizontal" role="form" method="POST" action="/testStream/dataValue"><br/>
+            <div class="form-group">
+                <label for="dataValue" class="col-sm-2 control-label">数值</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="dataValue" name="dataStream[value]"/>
+                </div>
+            </div><br/>
+            <div class="form-group">
+                <label for="dataPointKey" class="col-sm-2 control-label">dataPointKey</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="dataValue" name="dataStream[dataPointKey]"/>
+                </div>
+                <!--568f48b6d2100c1c09d2ad68-->
+            </div><br/>
+            <!--<input type="hidden" name="dataStream[]" value="">-->
+            <button class="btn btn-success col-sm-offset-4 col-sm-4" type="submit">创建数据流点</button>
+        </form>
+    </div>
+</div>

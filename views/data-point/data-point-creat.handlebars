@@ -1,0 +1,174 @@
+
+
+
+
+
+<div class="iot_dataPointCreat">
+
+    <div class="container iot_select_device">
+        <div class="row">
+            <form class="form-horizontal">
+                <div class="form-group"><br/>
+                    <label for="projectId" class="col-sm-2 control-label">选择设备:</label>
+                    <div class="col-sm-4">
+                        <select class="form-control iot_project_select">
+                            {{#each projects}}
+                                <option value ="{{name}}">项目&nbsp;:&nbsp;{{name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select class="form-control iot_device_select">
+                            <option class="iot_select_null" value ="">请选择设备</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr/>
+    </div>
+
+    <div class="container iot_dataPointForm">
+        <div class="row">
+            <form class="form-horizontal" role="form" method="POST" action="/data-point/data-point-save"><br/>
+                <div class="form-group">
+                    <label for="dataPointName" class="col-sm-2 control-label">数据点名称</label><em>*</em>
+                    <div class="col-sm-8">
+                        <input type="text" required="true" class="form-control" placeholder="请输入数据点名称,小于二十个字符的汉字数字字母或下划线"  id="dataPointName" name="dataPoint[name]"/>
+                    </div>
+                </div><br/>
+                <div class="form-group">
+                    <label for="dataPointDescript" class="col-sm-2 control-label">数据点描述</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="dataPointDescript" placeholder="请输入数据点相关描述信息" name="dataPoint[descript]"></textarea>
+                    </div>
+                </div><br/>
+                <div class="form-group">
+                    <label for="#" class="col-sm-2 control-label">接入类型选择</label><em>&nbsp;&nbsp;*</em>
+                    <div class="col-sm-4">
+                        <select class="form-control iot_select_type" name="dataPoint[value.type]">
+                            <option value ="numericalModel">数值型</option>
+                            <option value ="switchQuantity">开关量</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-sm-4 iot_numericalUnit">
+                        <input type="text" class="form-control" placeholder="请填入正确的数值单位" name="dataPoint[value.numericalUnit]"/>
+                    </div>
+                </div>
+                <div class="form-group form-inline iot_range">
+                    <label for="#" class="col-sm-2 control-label">数值量范围选择</label>
+                    <div class="form-group col-sm-4">
+                        <label for="#" class="col-sm-4 control-label">范围下限</label>
+                        <input type="text" class="form-control iot_rangeMin" placeholder="数值范围下限" name="dataPoint[range.min]"/>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="#" class="col-sm-4 control-label">范围上限</label>
+                        <input type="text" class="form-control iot_rangeMax" placeholder="数值范围上限（需要大于下限值）" name="dataPoint[range.max]"/>
+                    </div>
+                </div><br/>
+                <div class="form-group">
+                    <label for="dataPointCycle" class="col-sm-2 control-label iot_cycle">数据上传周期</label><em>*</em>
+                    <div class="col-sm-8">
+                        <input type="text" required="true" class="form-control" id="dataPointCycle" placeholder="请直接填入上传数据的周期，但为默认为秒，数值型" name="dataPoint[cycle]"/>
+                    </div>
+                </div><br/>
+                <input type="hidden" class="iot_dataPoint_relation" name="dataPoint[relation]" value="">
+                <button class="btn btn-success col-sm-offset-2 col-sm-2" type="submit">创建数据节点</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!--以下部分是提示框的代码-->
+<div class="container iot_tips_wrap">
+    <div class="popover right iot_tips alert">
+        <div class="arrow"></div>
+        <h3 class="popover-title">来自平台的提示信息</h3>
+        <div class="popover-content"></div>
+    </div>
+</div>
+
+
+{{#section 'jquery'}}
+    <script>
+        //这里用于加载选定项目以后的后边的设备选项加载
+        $(document).ready(function(){
+            var blurEvent_project = function(){
+                var projectName = $(".iot_dataPointCreat .iot_project_select").val();
+                //console.log(projectName);
+                projectName&& $.ajax({
+                    url:"http://localhost:3000/deviceGetProject?projectName="+projectName,
+                    type:"get",
+                    dataType:"jsonp",
+                    cache:true,
+                    crossDomain:true,//跨域访问
+                    jsonp:"callback",
+                    success:function(data){
+                        //console.log(data.devices);
+                        $('.iot_dataPointCreat .iot_device_select').html("");
+                        var len = data.devices.length;
+                        for(var i=0;i<len;i++){
+                            var html = '<option value ="'+data.devices[i].name+'" data-device_id="'+data.devices[i]._id+'">设备&nbsp;:&nbsp;'+data.devices[i].name+'</option>';
+                            $(html).appendTo($('.iot_dataPointCreat .iot_device_select'));
+                        }
+                    },
+                    error:function(data){
+                        console.log(data);
+                    }
+                });
+            };
+            var blurEvent_device = function(){
+                //console.log($(".iot_dataPointCreat .iot_device_select option:selected").data("device_id"));
+                $(".iot_dataPointForm .iot_dataPoint_relation").val($(".iot_dataPointCreat .iot_device_select option:selected").data("device_id"));
+            };
+            blurEvent_project();// 在这个地方调用触发函数，会导致函数的data-device_id为空值，异步加载的问题
+            $(".iot_dataPointCreat .iot_project_select").blur(blurEvent_project);
+            //在填写数据点名称input失去焦点和选择完设备名称的时候的时候触发
+            $("#dataPointName,.iot_dataPointCreat .iot_device_select").blur(blurEvent_device);
+        });
+    </script>
+    <script>
+        $(document).ready(function(){//这里用来处理页面表单的验证逻辑
+//            console.log($('textarea').offset().top);
+//            console.log($("textarea").width());
+//            console.log($('textarea').offset().left);
+//            console.log($("textarea").height());
+            //$(".iot_tips").css("top",$('textarea').offset().top-10).css("display","block").css("left",$('textarea').offset().left+$("textarea").width()+26);
+            //必须输入数据点的名称，且长度不能超过20个字符
+            $("#dataPointName").blur(function(){
+                if(!(/^[\u4e00-\u9fa5\w]{1,20}$/.test($("#dataPointName").val()))){
+                    $(".iot_tips").css("display","block").css("top",$('#dataPointName').offset().top-20).css("left",$('#dataPointName').offset().left+$("#dataPointName").width()+28);
+                    $(".iot_tips .popover-content").html("请输入正确格式的数据点名称");
+                }else{
+                    $(".iot_tips").css("display","none");
+                }
+            });
+            //数据点的描述可以不写
+            //如果选择是开关类型的就不需要填写单位还有范围了
+            $(".iot_dataPointForm .iot_select_type").blur(function(){
+                if($(this).val()!="numericalModel"){
+                    $(".iot_dataPointForm .iot_numericalUnit,.iot_dataPointForm .iot_range").css("display","none");
+                }else{
+                    $(".iot_dataPointForm .iot_numericalUnit,.iot_dataPointForm .iot_range").css("display","block");
+                }
+            });
+            //上传的周期必须填写一个整形的数值
+            $("#dataPointCycle").blur(function(){
+                if(!(/^\d{1,3}$/.test($(this).val()))){
+                    $(".iot_tips").css("display","block").css("top",$(this).offset().top-20).css("left",$(this).offset().left+$(this).width()+28);
+                    $(".iot_tips .popover-content").html("请输入1~999的数字");
+                }else{
+                    $(".iot_tips").css("display","none");
+                }
+            });
+            //这里验证输入的数字量上下限
+            $(".iot_dataPointForm .iot_range .iot_rangeMax,.iot_dataPointForm .iot_range .iot_rangeMin").blur(function(){
+                if(!(/^\d{0,10}$/.test($(".iot_rangeMin").val())&&/^\d{0,10}$/.test($(".iot_rangeMax").val())&&($(".iot_rangeMin").val()<$(".iot_rangeMax").val()))){
+                    $(".iot_tips").css("display","block").css("top",$(".iot_rangeMax").offset().top-20).css("left",$(".iot_rangeMax").offset().left+$(".iot_rangeMax").width()+28);
+                    $(".iot_tips .popover-content").html("请输入正确规格的数字");
+                }else{
+                    $(".iot_tips").css("display","none");
+                }
+            });
+        });
+    </script>
+{{/section}}

@@ -1,0 +1,38 @@
+
+
+
+
+<div class="container ">
+    <div class="row">
+        <h1>恭喜数据节点&nbsp;&nbsp;{{name}}&nbsp;&nbsp;创建成功！</h1>
+        <div class="form-horizontal"><br/>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">数据节点dataPointKey</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" value="{{dataPointKey}}"/>
+                </div>
+            </div><br/>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">数据节点描述</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" value="{{name}}"/>
+                </div>
+            </div><br/>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">数据节点上传数据协议</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" value="HTTP协议"/>
+                </div>
+            </div><br/>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">数据上传API地址为</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" value="/testStream/dataValue"/>
+                </div>
+            </div><br/>
+            <a href="/data-point/data-point-create" type="button"><button class="btn btn-info col-sm-offset-2 col-sm-4">返回</button></a>
+        </div>
+        <hr/>
+        <a href="/dataPointUploadTest">模拟数据上传</a>
+    </div>
+</div>

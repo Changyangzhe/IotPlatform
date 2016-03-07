@@ -1,0 +1,51 @@
+{
+  "name": "meadowlarktravel",
+  "version": "0.0.0",
+  "description": "Sample website for Web Development with Node and Express (O'Reilly).",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EthanRBrown/web-development-with-node-and-express.git"
+  },
+  "author": "Ethan Brown <e@zepln.com>",
+  "license": "GPL, MIT",
+  "bugs": {
+    "url": "https://github.com/EthanRBrown/web-development-with-node-and-express/issues"
+  },
+  "homepage": "https://github.com/EthanRBrown/web-development-with-node-and-express",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.14.2",
+    "chai": "~1.9.1",
+    "connect-mongo": "^1.1.0",
+    "connect-multiparty": "^2.0.0",
+    "cookie-parser": "^1.4.0",
+    "express": "~4.4.2",
+    "express-session": "^1.12.1",
+    "express3-handlebars": "~0.5.0",
+    "grunt-concurrent": "^2.1.0",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-contrib-less": "^1.1.0",
+    "grunt-contrib-uglify": "^0.11.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-nodemon": "^0.4.1",
+    "moment": "^2.10.6",
+    "mongoose": "^4.3.4",
+    "morgan": "^1.6.1",
+    "path": "^0.12.7",
+    "response-time": "^2.3.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cafe-mocha": "^0.1.12",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-exec": "^0.4.5",
+    "mocha": "~1.20.1",
+    "zombie": "~2.0.0-alpha31"
+  }
+}

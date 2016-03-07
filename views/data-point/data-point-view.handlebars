@@ -1,0 +1,118 @@
+
+
+<div class="container iot_dataPoint_view">
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group"><br/>
+                <label class="col-sm-2 control-label">依次选择查询数据节点</label>
+                <div class="col-sm-3 iot_project">
+                    <select class="form-control">
+                        {{#each projects}}
+                        <option value ="11" data-project_id="{{_id}}">项目&nbsp;:&nbsp;{{name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col-sm-3 iot_device">
+                    <select class="form-control">
+                        <option class="" value ="">请选择设备</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 iot_dataPoint">
+                    <select class="form-control">
+                        <option class="" value ="">请选择数据节点</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="iot_dataPoint_detail">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="dataPoint_name" class="col-sm-2 control-label">数据节点名称</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="dataPoint_name"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="dataPoint_id" class="col-sm-2 control-label">数据节点dataPointKey</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="dataPoint_id"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="dataPoint_descript" class="col-sm-2 control-label">数据节点描述</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="dataPoint_descript"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+    </div>
+</div>
+
+{{#section 'jquery'}}
+    <script>
+        $(document).ready(function(){
+            //用于加载选中的项目下的设备
+            $(".iot_dataPoint_view .iot_project select").blur(function(){
+                var projectId = $(".iot_dataPoint_view .iot_project select option:selected").data("project_id");
+                //alert(projectId);
+                projectId && $.ajax({
+                    url:"http://localhost:3000/device/device-search?projectId="+projectId,
+                    type:"get",
+                    dataType:"jsonp",
+                    cache:true,
+                    crossDomain:true,//跨域访问
+                    jsonp:"callback",
+                    success:function(data){
+                        //console.log(data.devices);
+                        $('.iot_dataPoint_view .iot_device select').html("");
+                        var len = data.devices.length;
+                        for(var i=0;i<len;i++){
+                            var html = '<option value ="'+data.devices[i].name+'"data-device_id="'+data.devices[i]._id+'">设备&nbsp;:&nbsp;'+data.devices[i].name+'</option>';
+                            $(html).appendTo($('.iot_dataPoint_view .iot_device select'));
+                        }
+                    },
+                    error:function(data){
+                        console.log(data);
+                    }
+                });
+            });
+
+            //利用设备的_id来查询数据节点
+            $(".iot_dataPoint_view .iot_device select").blur(function(){
+                var deviceId = $(".iot_dataPoint_view .iot_device select option:selected").data("device_id");
+                //alert(deviceId);
+                deviceId && $.ajax({
+                    url:"http://localhost:3000/data-point/data-point-search?deviceId="+deviceId,
+                    type:"get",
+                    dataType:"jsonp",
+                    cache:true,
+                    crossDomain:true,//跨域访问
+                    jsonp:"callback",
+                    success:function(data){
+                        console.log(data.dataPoints);
+                        $('.iot_dataPoint_view .iot_dataPoint select').html("");
+                        var len = data.dataPoints.length;
+                        for(var i=0;i<len;i++){
+                            var html = '<option value ="'+data.dataPoints[i].name+'"data-dataPoint_id="'+data.dataPoints[i]._id+'"data-dataPoint_name="'+data.dataPoints[i].name+'"data-dataPoint_descript="'+data.dataPoints[i].descript+'">设备&nbsp;:&nbsp;'+data.dataPoints[i].name+'</option>';
+                            $(html).appendTo($('.iot_dataPoint_view .iot_dataPoint select'));
+                        }
+                    },
+                    error:function(data){
+                        console.log(data);
+                    }
+                });
+            });
+            //使用js来显示dataPoint的信息
+            $(".iot_dataPoint_view .iot_dataPoint select").blur(function(){
+                //这里的data-dataPoint_name在加载到页面上是就变为小写了，data-datapoint_name
+                //console.log($(".iot_dataPoint_view .iot_dataPoint select option:selected").data("datapoint_name"));
+                $("#dataPoint_name").val($(".iot_dataPoint_view .iot_dataPoint select option:selected").data("datapoint_name"));
+                $("#dataPoint_id").val($(".iot_dataPoint_view .iot_dataPoint select option:selected").data("datapoint_id"));
+                $("#dataPoint_descript").val($(".iot_dataPoint_view .iot_dataPoint select option:selected").data("datapoint_descript"));
+            });
+        });
+    </script>
+{{/section}}

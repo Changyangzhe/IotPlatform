@@ -1,0 +1,101 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <form method="POST" action="/user/sign-up" class="iot_signupForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="signupName">用户名</label>
+                        <input id="signupName" class="form-control iot_username" name="user[name]" type="text">
+                        <span class="help-block state1">请输入用户名</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">密码</label>
+                        <input id="signupPassword" class="form-control iot_password" name="user[password]" type="password">
+                        <span class="help-block state1">请输入密码</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">确认密码</label>
+                        <input id="signupPassword" class="form-control iot_replayPassword" type="password">
+                        <span class="help-block state1">请输入确认密码</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">邮箱</label>
+                        <input id="signupEmail" class="form-control iot_email" name="user[email]" type="text">
+                        <span class="help-block state1">请输入邮箱</span>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/"><button class="btn btn-default" type="button">关闭</button></a>
+                        <button class="btn btn-success iot_submit" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{#section 'jquery'}}
+    <script>
+        $(function(){
+            var ok1=false;
+            var ok2=false;
+            var ok3=false;
+            var ok4=false;
+            var reg=/^[a-zA-Z0-9_]{6,16}$/;
+            var regEmail=/^(\w+\.)*\w+@(\w+\.)+[A-Za-z]+$/;
+
+            // 验证用户名
+            $('.iot_username').focus(function(){
+                $(this).next().text('用户名应该为6-20位的字母数字或者下划线').removeClass('state1').addClass('state2');
+            }).blur(function(){
+                if(reg.test($('.iot_username').val())){
+                    $(this).next().text('输入成功').removeClass('state1').addClass('state4');
+                    ok1=true;
+                }else{
+                    $(this).next().text('用户名应该为6-20位的字母数字或者下划线').removeClass('state1').addClass('state3');
+                }
+            });
+
+            //验证密码
+            $('.iot_password').focus(function(){
+                $(this).next().text('密码应该为6-20位的字母数字或者下划线').removeClass('state1').addClass('state2');
+            }).blur(function(){
+                if(reg.test($('.iot_username').val())){
+                    $(this).next().text('输入成功').removeClass('state1').addClass('state4');
+                    ok2=true;
+                }else{
+                    $(this).next().text('密码应该为6-20位的字母数字或者下划线').removeClass('state1').addClass('state3');
+                }
+            });
+
+            //验证确认密码
+            $('.iot_replayPassword').focus(function(){
+                $(this).next().text('输入的确认密码要和上面的密码一致').removeClass('state1').addClass('state2');
+            }).blur(function(){
+                if(reg.test($('.iot_username').val())&& $(this).val() === $('.iot_password').val()){
+                    $(this).next().text('输入成功').removeClass('state1').addClass('state4');
+                    ok3=true;
+                }else{
+                    $(this).next().text('输入的确认密码要和上面的密码一致').removeClass('state1').addClass('state3');
+                }
+            });
+
+            //验证邮箱
+            $('.iot_email').focus(function(){
+                $(this).next().text('请输入正确格式的EMAIL').removeClass('state1').addClass('state2');
+            }).blur(function(){
+                if(!regEmail.test($(this).val())){
+                    $(this).next().text('请输入正确格式的EMAIL').removeClass('state1').addClass('state3');
+                }else{
+                    $(this).next().text('输入成功').removeClass('state1').addClass('state4');
+                    ok4=true;
+                }
+            });
+
+            //提交按钮,所有验证通过方可提交
+            $('.iot_submit').click(function() {
+                if (!(ok1 && ok2 && ok3 && ok4)) {
+                    return false;
+                }
+            });
+        });
+    </script>
+{{/section}}

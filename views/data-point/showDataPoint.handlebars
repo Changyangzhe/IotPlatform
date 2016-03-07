@@ -1,0 +1,160 @@
+
+
+
+{{#section 'head'}}
+    <!-- ECharts单文件引入 -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+{{/section}}
+
+
+<div id="test_1" style="height:400px"></div>
+
+
+<input class="getData_1" type="hidden" value="{{dataPoint}}">
+<input class="getData_2" type="hidden" value="{{dataStreams}}">
+<p type="hidden">{{dataPoint}}</p>
+
+<ul class="getData_3">{{#each dataStreams}}
+    <li>{{moment meta.createAt}}{{value}}</li>
+{{/each}}
+</ul>
+<p class="test"></p>
+
+
+
+{{#section 'jquery'}}
+    <script type="text/javascript">
+
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: 'http://echarts.baidu.com/build/dist'
+            }
+        });
+
+        // 使用
+        require(
+                [
+                    'echarts',
+                    'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
+                ],
+                function (ec) {
+                    // 基于准备好的dom，初始化echarts图表
+                    var myChart_1 = ec.init(document.getElementById('test_1'));
+
+                    var option_1 = {
+                        title : {//这里添加表的名称
+                            text: '数据点'+ $('.getData_1').val().split(",")[4].split(":")[1].split("'")[1] +'模拟数据展示页面',
+                            subtext: '虚构'
+                        },
+                        tooltip : {
+                            trigger: 'axis'
+                        },
+
+                        toolbox: {
+                            show : true,
+                            feature : {
+                                mark : {show: true},
+                                dataView : {show: true, readOnly: false},
+                                magicType : {show: true, type: ['line', 'bar']},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
+                        },
+                        calculable : true,
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data:time_1
+//                                data : ['1.2','1.3','1.4','1.5','1.6','1.7']
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value',
+                                axisLabel : {
+                                    formatter: '{value} '
+                                }
+                            }
+                        ],
+                        series : [
+                            {
+                                name:'数值value',
+                                type:'line',
+                                data:valueArr_1,
+//                                data:[11, 5, 15, 18, 12, 13, 10],
+                                markPoint : {//这里有个问题，不能识别三位数，三位数不能比较大小
+                                    data : [
+                                        {type : 'max', name: '最大值'},
+                                        {type : 'min', name: '最小值'}
+                                    ]
+                                }
+
+                            }
+
+                        ]
+                    };
+
+
+                    // 为echarts对象加载数据
+                    myChart_1.setOption(option_1);
+                }
+        );
+    </script>
+    <script>
+//var str = $('.getData_1').val().split(",")[4].split(":")[1].split("'")[1];
+//var str_1 = str.split(",")[4].split(":")[1].split("'")[1];
+//$(".test").html(str_1);
+//        console.log(str_1);
+
+        console.log($('.getData_2').val());
+
+var str2 = $('.getData_2').val();
+var str_2 = str2.split(",");
+var length = str_2.length;
+
+
+var valueArr = [];
+for(var i=0;i<length;i++){
+    if(i%6==0){
+        valueArr.push(str_2[i])
+    }
+}
+var valueArr_1 = [];
+for(var j=0;j<valueArr.length;j++){
+    valueArr_1.push(valueArr[j].split(": ")[1])
+}
+
+console.log(str_2);
+console.log(valueArr);
+console.log(valueArr_1);
+
+
+var time = [];
+for(var g =0;g<length;g++){
+    if(g%6==1){
+        time.push(str_2[g])
+    }
+}
+var time_1 = [];
+for(var l=0;l<time.length;l++){
+    time_1.push(time[l].slice(25,49));
+}
+
+
+console.log(time);
+console.log(time_1);
+//        var objArr = [];
+//        objArr.push($('.getData_2').val());
+//        console.log(objArr);
+        console.log(jQuery.isArray($('.getData_2').val()));//false
+        function transform(obj){
+            var arr = [];
+            for(var item in obj){
+                arr.push(obj[item]);
+            }
+            return arr;
+        }
+    </script>
+{{/section}}
