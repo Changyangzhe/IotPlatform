@@ -4,9 +4,30 @@
     <div class="container project_tag_1">
         <div class="iot_viewAll" >
             <h3 class="text-left">我的项目:总数<b></b>个</h3><hr/>
+            <!--<div class="">-->
+                <!--<table class="table table-bordered">-->
+                    <!--<thead>-->
+                        <!--<th>项目名称</th>-->
+                        <!--<th>项目描述</th>-->
+                        <!--<th>项目创建时间</th>-->
+                        <!--<th>编辑项目</th>-->
+                        <!--<th>查看设备</th>-->
+                    <!--</thead>-->
+                    <!--<tbody class="row iot_wrap_2">-->
+                        <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td>1</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td>1</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td>2016 01-17 13:26:33</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td><a href="#"><span class="">编辑项目</span></a></td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td><a href="#"><span class="">查看设备</span></a></td>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                    <!--</tbody>-->
+                <!--</table>-->
+            <!--</div>-->
             <div class="row iot_wrap">
             </div>
         </div>
+
         <div class="container iot_editPage">
             <h3>编辑项目</h3><hr/>
             <div class="row">
@@ -96,7 +117,15 @@ $(document).ready(function(){
                             '<li class="message"><i class="glyphicon glyphicon-calendar"></i><span>创建时间&nbsp;:&nbsp;'+moment(data.projects[i].meta.createAt).format('YYYY MM-DD HH:mm:ss')+'</span></li>' + '' +
                             '</ul><a href="#"><h3 class="iot_editItem col-md-4" data-id="'+ i +'">编辑项目</h3>' + '</a>' +
                             '<a href="/device/view?id='+ data.projects[i]._id+'&projectName='+data.projects[i].name+'"><h3 class="col-md-4">查看设备</h3>' + '</a></div></div></div></div>';//这里的a元素的href属性嵌套引号
+//                    var html_2='<tr>' +
+//                            '<td>'+data.projects[i].name+'</td>' +
+//                            '<td>'+data.projects[i].descript+'</td>' +
+//                            '<td>'+moment(data.projects[i].meta.createAt).format('YYYY MM-DD HH:mm:ss')+'</td>' +
+//                            '<td><a href="#"><span class="" data-id="'+ i +'">编辑项目</span></a></td>' +
+//                            '<td><a href="/device/view?id='+ data.projects[i]._id+'&projectName='+data.projects[i].name+'"><span class="">查看设备</span></a></td>' +
+//                            '</tr>';
                     $(html).appendTo($(".project_tag_1 .iot_wrap"));
+                    //$(html_2).appendTo($(".project_tag_1 .iot_wrap_2"));
                 }
                 //处理项目详情页
                 $('.project_tag_1 .iot_editItem').click(function(){
