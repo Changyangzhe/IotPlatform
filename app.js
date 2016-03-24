@@ -1,5 +1,6 @@
 
 
+
 var express = require('express');
 //引入配置文件，配置app的端口和数据库地址，以后可能更多
 var Config = require('./config.js');
