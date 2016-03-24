@@ -45,6 +45,7 @@
     "grunt-cafe-mocha": "^0.1.12",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-exec": "^0.4.5",
+    "gulp": "^3.9.1",
     "mocha": "~1.20.1",
     "zombie": "~2.0.0-alpha31"
   }
