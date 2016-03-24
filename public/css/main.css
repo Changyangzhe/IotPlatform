@@ -13,12 +13,12 @@ html,body{
    /*width:300px;*/
 }
 /*借助媒体查询来控制缩略标题的长短*/
-@media screen and (min-width:1300px) {
+@media screen and (min-width:1400px) {
    .iot_head .navbar-brand.title{
       width:auto;
    }
 }
-@media screen and (max-width:1299px) and (min-width: 1000px) {
+@media screen and (max-width:1399px) and (min-width: 1000px) {
    .iot_head .navbar-brand.title{
       width:200px;
    }
