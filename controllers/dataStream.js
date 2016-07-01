@@ -48,23 +48,6 @@ exports.testPage = function(req,res){
 
 };
 
-
-//POST http://10.8.208.180:3000/testStream/dataValue HTTP/1.1
-//
-//    Host:10.8.208.180
-//{value:200,dataPointKey:568d006265b160e42116d212}
-
-
-
-//POST http://10.8.208.180:3000/testStream/dataValue HTTP/1.1
-//
-//    Host:10.8.208.180:3000
-//
-//Content-Type: application/json
-//{"dataStream[value]":222,"dataStream[dataPointKey]":"568d006265b160e42116d212"}
-
-
-
 //这里处理的是测试页面的数据
 exports.showPage = function(req,res){
     //这里要想页面传递很多的数据，包括这个数据点dataPoint的一些信息，还有dataStream一些信息

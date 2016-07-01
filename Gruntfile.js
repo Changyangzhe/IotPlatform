@@ -77,7 +77,6 @@ module.exports = function(grunt){
 					delayTime:1,
 					env:{
 						PORT:3000
-
 					},
 					cwd:__dirname
 				}
