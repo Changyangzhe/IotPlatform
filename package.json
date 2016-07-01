@@ -26,13 +26,14 @@
     "express": "~4.4.2",
     "express-session": "^1.12.1",
     "express3-handlebars": "~0.5.0",
+    "grunt": "^1.0.1",
     "grunt-concurrent": "^2.1.0",
     "grunt-contrib-jshint": "^0.11.3",
     "grunt-contrib-less": "^1.1.0",
     "grunt-contrib-uglify": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-mocha-test": "^0.12.7",
-    "grunt-nodemon": "^0.4.1",
+    "grunt-nodemon": "^0.4.2",
     "moment": "^2.10.6",
     "mongoose": "^4.3.4",
     "morgan": "^1.6.1",
@@ -41,11 +42,9 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
     "grunt-cafe-mocha": "^0.1.12",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-exec": "^0.4.5",
-    "gulp": "^3.9.1",
     "mocha": "~1.20.1",
     "zombie": "~2.0.0-alpha31"
   }

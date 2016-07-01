@@ -12,7 +12,7 @@ module.exports = function(grunt){
 				}
 			},
 			js:{  //监听文件变更，重启服务
-				files:['public/**','models/*.js','controllers/*.js','app.js'],
+				files:['public/**','models/*.js','controllers/*.js','app.js','Gruntfile.js'],
 				options:{
 					livereload:true
 				}
