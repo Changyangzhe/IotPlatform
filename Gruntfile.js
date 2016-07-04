@@ -38,8 +38,8 @@ module.exports = function(grunt){
 			options:{
 				jshintrc:'.jshintrc',
 				ignores:['public/assets/libs/**/*.js']
-			}
-			//all: ['public/assets/js/*.js','test/**/*.js','app/**/*.js','app.js']
+			},
+			all: ['public/assets/js/*.js','test/**/*.js','app/**/*.js','app.js']
 		},
 		//less
 		less:{

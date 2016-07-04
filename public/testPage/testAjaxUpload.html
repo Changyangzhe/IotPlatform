@@ -1,0 +1,47 @@
+<!doctype>
+<html>
+	<header>
+		<title>test-ajax-upload</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</header>
+	<body>
+		<style>
+			.value,.num{
+				margin:20px;
+			}
+			.value input,.num input{
+				margin-left: 20px;
+			}
+		</style>
+		<div class="value"><label>模拟的当前值</label><input value="" type="text"/></div>
+		<div class="num"><label>上传数据次数</label><input type="text" value=""/></div>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script>
+			$(function(){				
+				var i=0;
+				function setInterval_do(){
+					var randomValue = 20 + Math.floor(Math.random()*20);
+					$('.value input').val(randomValue);
+					$('.num input').val(++i);
+
+					$.ajax({
+						type:"POST",
+						url:"http://10.8.207.185:3000/devices/55/data-points?jquery=555",
+					    data:{    	
+					    	dk:"5779fb2cb6a50ab809ee5e81",
+					    	vl:randomValue
+					    },
+					    success:function(data){
+					    	console.log(data);
+					    },
+					});
+					
+					setTimeout(function(){setInterval_do();},200);//这个地方果然其妙啊，先说明是要调用这个函数，但是没说明是哪个函数，避免了，函数赋值未完成的函数未定义错误。
+				}
+				setInterval_do();
+			});
+		</script>
+
+	</body>
+
+</html>

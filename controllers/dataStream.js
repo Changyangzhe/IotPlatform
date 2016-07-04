@@ -31,16 +31,105 @@ exports.testUpload = function(req,res) {
                 //res.render('dataPoint',{});
                 //req.session.project = newProject;
                 //console.log(req.session.project);
-                res.render('data-point/dataPointUploadTest',{
+                //res.render('data-point/dataPointUploadTest',{
                     //name:newDataPoint.name,
                     //dataPointKey:newDataPoint._id
+                //})
+                res.jsonp({
+                    "message":"success"
                 })
             });
-            //}
-            //});
     //    }
     //});
 };
+
+//ajax提交数据
+exports.ajaxDataPointUpload = function(req,res) {
+    //var _dataStream = req.body.dataStream;     //通过表单拿到数据，是一个对象
+    //console.log(req.body);
+    //console.log(_dataStream);
+    console.log(req.params.id);
+    console.log(req.query.jquery);
+    console.log(req.body);
+    var _dataStream = req.body;
+    var msg={};
+    msg["dataPointKey"] = _dataStream.dk;
+    msg["value"] = _dataStream.vl;
+    //console.log(req.url);
+    //DataStream.findOne({name: _dataPoint.name}, function (err, dataPoint) {
+    //    if (err) {
+    //        console.log(err);
+    //    }
+    //    if (dataPoint) {
+    //        console.log("项目名称已存在，请更换名称！");
+    //    } else {//如果不存在，则生成一个新的项目
+        var newDataStream = new DataStream(msg);
+        console.log(newDataStream);
+        newDataStream.save(function (err, dataStream) {
+        console.log("保存到数据库成功！");
+        if (err) {
+            console.log(err);
+        }
+        //newDataStream.createAt = new Date();
+        //res.render('dataPoint',{});
+        //req.session.project = newProject;
+        //console.log(req.session.project);
+        //res.render('data-point/dataPointUploadTest',{
+        //name:newDataPoint.name,
+        //dataPointKey:newDataPoint._id
+        //})
+    });
+    res.jsonp({
+       "message":"success"
+    });
+    //    }
+    //});
+
+};
+
+//ajax提交多条数据
+
+//ajax提交数据
+exports.ajaxDataPointsUpload = function(req,res) {
+    console.log(req.params.id);
+    console.log(req.query.jquery);
+    console.log(req.body);
+    var reqBody = req.body;
+    var error_ = [];
+    for(var i= 0,len = reqBody.dataStreams.length;i<len;i++){
+        var data_single = reqBody.dataStreams[i];
+        var newDataStream = new DataStream(data_single);
+        console.log(newDataStream);
+        newDataStream.save(function (err, dataStream) {
+            console.log("保存到数据库成功！");
+            if (err) {
+                console.log(err);
+                error_.push(err);
+            }
+        });
+    }
+    res.jsonp({
+        "error":error_.length,
+        "message":error_
+    });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 exports.testPage = function(req,res){
     res.render('data-point/dataPointUploadTest',{
 

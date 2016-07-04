@@ -3,6 +3,10 @@
 
 
 
+
+
+
+
 <h2>ajax模拟数据上传页面</h2>
 <div class="container">
     <div class="row text-center">
@@ -26,3 +30,38 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{{#section 'jquery'}}
+    <script>
+        //这里利用ajax来处理project_tag_1的数据
+        $(document).ready(function() {
+            var getData = function () {
+                $(".project_tag_1 .iot_wrap").html("");
+                $.ajax({
+                    url: "http://10.8.207.185:3000/devices/[device_id]/datapoints",
+                    type: "get",
+                    dataType: "jsonp",
+                    cache: true,
+                    crossDomain: true,//跨域访问
+                    jsonp: "callback",
+                    success: function (data) {
+
+                    }
+                });
+            }
+        });
+    </script>
+{{/section}}

@@ -63,5 +63,11 @@ module.exports = function(app){//在这个地方进行路由的分配和处理
 
     //监控中心
     app.get('/monitoring-center',DataPoint.monitoringCenter);
+
+
+    //新更改2016.7.4
+    //app.post('/devices/:id/data-points',DataStream.ajaxDataPointUpload);
+    //测试多条数据的ajax提交的接口
+    app.post('/devices/:id/data-points',DataStream.ajaxDataPointsUpload);
 };
 

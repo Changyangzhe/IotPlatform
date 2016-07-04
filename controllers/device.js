@@ -125,11 +125,12 @@ exports.savePicture = function(req, res,next) {
     var filePath = pictureData.path;
     //var originalFilename = picrureData.originalFilename;//用于判断文件是否存在
 
+    //这里使用接口readfile来读取form表单提交的图片数据，再使用writeFile来写入到服务器上的文件夹
     fs.readFile(filePath, function(err, data){
         var timestamp = Date.now();
         var type = pictureData.type.split('/')[1];
         var picture = timestamp + '.' + type;
-        var newPath = path.join(__dirname, '../', '/public/upload/' + picture);
+        var newPath = path.join(__dirname, '../','/public/upload/' + picture);
         fs.writeFile(newPath, data, function(err) {
             req.picture = picture;
             next()
