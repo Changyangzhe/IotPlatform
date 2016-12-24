@@ -54,6 +54,7 @@ var DeviceSchema = new mongoose.Schema({  //数据库模式
     //    default:51            //权限设置
     //},                        // user /admin /super admin
     meta:{
+        //这里可以使用到当前时间的毫秒数，然后 new Date(毫秒数);
         createAt:{
             type:Date,
             default:Date.now()

@@ -44,6 +44,10 @@ html,body{
    line-height: 40px;
    margin:-10px -10px 0 50px;
 }
+.iot_function{
+   color: #444;
+   font-weight:bold ;
+}
 .iot_head .iot_function:hover{
    color:#222;
 }

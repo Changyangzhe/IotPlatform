@@ -1,0 +1,43 @@
+POST http://localhost:3000/testStream/dataValue HTTP/1.1
+Host: localhost:3000
+Connection: keep-alive
+Content-Length: 78
+Cache-Control: max-age=0
+Origin: <http://localhost:3000>
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2783.4 Safari/537.36
+Content-Type: application/x-www-form-urlencoded
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Referer: <http://localhost:3000/dataPointUploadTest>
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.8
+Cookie: connect.sid=s%3ASJIwjRvD0za49Pg9m-t-usMkDj7lageF.1xV5MAKSso2o6FcX01akfr008kkLSSRAOyEhGj8VAnE
+
+dataStream%5Bvalue%5D=88&dataStream%5BdataPointKey%5D=577907c5d7e8982c10357ec2
+
+
+简化如下：
+POST /testStream/dataValue HTTP/1.1
+Host: localhost:3000
+Content-Length: 78
+Content-Type: application/x-www-form-urlencoded
+
+dataStream%5Bvalue%5D=88&dataStream%5BdataPointKey%5D=577907c5d7e8982c10357ec2
+
+不同的编码方式，其实这两种都可以再简化		
+
+POST /devices/55/data-points?jquery=555 HTTP/1.1
+Host: 10.8.207.185:3000
+Content-Length: 47
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+dataPointKey=5779f94bb6a50ab809ee5a1a&value=100
+
+
+"workshopid":"A01",
+"gatewayid":"GW02",
+"ip":"10.8.207.185",
+"equipment":"03303",
+"processid":"GC05",
+"transforming":50,
+"disp":"节拍检测"A01"

@@ -109,9 +109,18 @@ exports.ajaxDataPointsUpload = function(req,res) {
         });
     }
     res.jsonp({
-        "error":error_.length,
+        //"error":error_.length,
         "message":error_
     });
+};
+
+//用于毕业论文的数据上传的操作，如下是处理数据的函数，处理之后并保存到
+
+//ajax提交数据
+exports.uploadData = function(req,res) {
+    console.log(req.params.id);
+    console.log(req.query.jquery);
+    console.log(req.body);
 };
 
 

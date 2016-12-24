@@ -1,0 +1,3 @@
+http://[DOMAIN_NAME]/devices/[devices_id]/
+
+ab -c 50 -n 100000 -T 'application/x-www-form-urlencoded' -p postdata.txt http://10.8.207.185:3000/devices/2

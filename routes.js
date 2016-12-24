@@ -68,6 +68,14 @@ module.exports = function(app){//在这个地方进行路由的分配和处理
     //新更改2016.7.4
     //app.post('/devices/:id/data-points',DataStream.ajaxDataPointUpload);
     //测试多条数据的ajax提交的接口
-    app.post('/devices/:id/data-points',DataStream.ajaxDataPointsUpload);
+    app.post('/devices/:id',DataStream.ajaxDataPointsUpload);
+
+
+    //用于写论文的用处,主要举的例子，用于一个节点的多组数据的上传
+    //app.post('/devices/:id',DataStream.uploadData);
+    //单页面，用于模拟结果
+    app.get('/paper/for-paper',Index.paper);
+    app.get('/paper/for-paper-2',Index.paper_2);
+    app.get('/paper/for-paper/:id',Index.paperAll);
 };
 

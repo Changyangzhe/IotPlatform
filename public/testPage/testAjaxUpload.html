@@ -26,7 +26,7 @@
 
 					$.ajax({
 						type:"POST",
-						url:"http://10.8.207.185:3000/devices/55/data-points?jquery=555",
+						url:"http://10.8.207.185:3000/devices/2",
 					    data:{    	
 					    	dk:"5779fb2cb6a50ab809ee5e81",
 					    	vl:randomValue
@@ -36,7 +36,7 @@
 					    },
 					});
 					
-					setTimeout(function(){setInterval_do();},200);//这个地方果然其妙啊，先说明是要调用这个函数，但是没说明是哪个函数，避免了，函数赋值未完成的函数未定义错误。
+					setTimeout(function(){setInterval_do();},1500);//这个地方果然其妙啊，先说明是要调用这个函数，但是没说明是哪个函数，避免了，函数赋值未完成的函数未定义错误。
 				}
 				setInterval_do();
 			});

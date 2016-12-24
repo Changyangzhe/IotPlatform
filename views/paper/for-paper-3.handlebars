@@ -1,0 +1,263 @@
+
+
+
+{{#section 'head'}}
+    <!-- ECharts单文件引入 -->
+    <script src="//cdn.bootcss.com/echarts/3.2.3/echarts.min.js"></script>
+{{/section}}
+
+
+
+<div class="row">
+    <!--<div class="col-md-3">-->
+        <!--<ul class="nav nav-pills nav-stacked" role="tablist">-->
+            <!--<li role="presentation" ><a href="#">Home</a></li>-->
+            <!--<li role="presentation" ><a href="#">Profile</a></li>-->
+            <!--<li role="presentation"><a href="#">Messages</a></li>-->
+            <!--<li role="presentation" class="active"><a href="#">实时监控设备</a></li>-->
+            <!--<li role="presentation"><a href="#">Messages</a></li>-->
+            <!--<li role="presentation"><a href="#">Messages</a></li>-->
+        <!--</ul>-->
+    <!--</div>-->
+    <div class="col-md-12 " style="border:1px solid #000;padding: 10px;">
+        <form>
+            <fieldset style="padding:.35em .625em .75em;margin:0 2px;border:1px solid silver;">
+                <legend style="padding:.5em;border:0;width:auto;margin-bottom: 0;">选择设备</legend>
+                <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">选择车间</label>
+                <div class="col-sm-5">
+                    <select class="form-control" style="margin-top: -6px;">
+                        <option value ="volvo">热处理车间</option>
+                        <option value ="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                </div>
+                <label class="col-sm-1 control-label">选择设备</label>
+                <div class="col-sm-5">
+                    <select class="form-control" style="margin-top: -6px;">
+                        <option value ="volvo">渗碳炉2</option>
+                        <option value ="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                </div>
+                        </div>
+                    </form>
+            </fieldset>
+        </form>
+        <fieldset style="padding:.35em .625em .75em;margin:0 2px;border:1px solid silver;">
+            <legend style="padding:.5em;border:0;width:auto;margin-bottom: 0;">设备基本信息</legend>
+            <table class="table table-striped table-responsive table-bordered .table-hover" style="margin-bottom:0;">
+                <tbody>
+                <tr>
+                    <td>设备厂商</td>
+                    <td>河南省天利工业炉有限公司</td>
+                    <td>运行状态</td>
+                    <td>正常</td>
+                </tr>
+                <tr>
+                    <td>型号</td>
+                    <td>RQD-105-9</td>
+                    <td>额定温度</td>
+                    <td>950℃</td>
+                </tr>
+
+
+                </tbody>
+            </table>
+
+        </fieldset>
+        <div class="">
+            <div>
+                <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+ <div style="border:1px solid #000;height:252px;margin:20px 0;position:relative;">
+     <h4 style="position: absolute;left:10px;top:0px;">当前设备内温度</h4>
+     <div id="pic_1" style="width: 1100px;height:250px;float:left;"></div>
+     <!--<div id="pic_11" style="width: 600px;height:350px;float:left;"></div>-->
+ </div>
+
+ <div style="border:1px solid #000;height:252px;margin:20px 0;position:relative;">
+     <h4 style="position: absolute;left:10px;top:0px;">当前设备内碳浓度值</h4>
+    <div id="pic_2" style="width: 1100px;height:250px;float:left;"></div>
+    <!--<div id="pic_21" style="width: 600px;height:350px;float:left;"></div>-->
+</div>
+            </div>
+        </div>
+        <!--<img src="/img/zxt.jpg" style="width: 100%;height: 600px;"/>-->
+    </div>
+</div>
+
+{{#section 'jquery'}}
+    <script>
+        function fn(){
+            var res = [];
+            var num = [10,20,30,40,50,60];
+            for(var i=25;i<60;i++){
+                for(var j=0;j<6;j++){
+                    var str = "13:"+i+" "+num[j];
+                    res.push(str);
+                }
+            }
+            for(var k=0;k<=25;k++){
+                for(var l=0;l<6;l++){
+                    var str = "14:" + k+" "+num[l];
+                    res.push(str);
+                }
+            }
+            return res;
+        }
+        function random_num(min,max){
+            var res = [];
+            for(var m=0;m<366;m++){
+                res.push(Math.floor(Math.random()*(max-min))+min);
+            }
+            return res;
+        }
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('pic_1'));
+        var myChart_2 = echarts.init(document.getElementById('pic_2'));
+        var option = {
+            title : {//这里添加表的名称
+                text:"",
+                subtext: ""
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            grid:{//这里控制坐标系的位置
+                //x:'100',
+//                y:'80',
+                //x2:'50',
+//                y2:'70'
+            },
+            dataZoom: {
+                show: true
+                //start : 0.5 * data.dataPoint.range.min,
+                //end : 0.5 * data.dataPoint.range.max
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : false,
+//                    data: ['13:25 10','13:25 20','13:25 30','13:25 40','14:25 20']
+                    data:fn()
+//生成在13：25 10到14：25 10的时间坐标
+
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    axisLabel : {
+                        formatter: '{value}'
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'数值value',
+                    type:'line',
+//                    data:[11, 5, 15, 18, 12, 13, 10],
+                    data:random_num(920,940),
+                    markPoint : {//这里有个问题，不能识别三位数，三位数不能比较大小
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    }
+
+                }
+
+            ]
+        };
+
+        // app.timeTicket = setInterval(function () {
+        option.series[0].data[0].value = (50.74).toFixed(2) - 0;
+        myChart.setOption(option, true);
+        // },2000);
+
+        option_2 = {
+            title : {//这里添加表的名称
+                text:"",
+                subtext: ""
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            grid:{//这里控制坐标系的位置
+                //x:'100',
+//                y:'80',
+                //x2:'50',
+//                y2:'70'
+            },
+            dataZoom: {
+                show: true
+                //start : 0.5 * data.dataPoint.range.min,
+                //end : 0.5 * data.dataPoint.range.max
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : false,
+//                    data: ['13:25 10','13:25 20','13:25 30','13:25 40','14:25 20']
+                    data:fn()
+//生成在13：25 10到14：25 10的时间坐标
+
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    axisLabel : {
+                        formatter: '{value}'
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'数值value',
+                    type:'line',
+//                    data:[11, 5, 15, 18, 12, 13, 10],
+                    data:random_num(0.9,1.0),
+                    markPoint : {//这里有个问题，不能识别三位数，三位数不能比较大小
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    }
+
+                }
+
+            ]
+        };
+        // app.timeTicket = setInterval(function () {
+        option_2.series[0].data[0].value = (16).toFixed(2) - 0;
+        myChart_2.setOption(option_2, true);
+        // },2000);
+    </script>
+{{/section}}
